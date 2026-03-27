@@ -90,7 +90,7 @@ task_type proto_read( Source& source, T& v )
 {
     using D = boost::describe::describe_members<T, boost::describe::mod_any_access | boost::describe::mod_inherited>;
 
-    return for_each_await( D(), [&](auto d) {
+    co_await for_each_await( D(), [&](auto d) {
 
         return proto_read( source, v.*d.pointer );
 
