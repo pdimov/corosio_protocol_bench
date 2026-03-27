@@ -28,10 +28,25 @@ FetchContent_Declare(corosio
 
 FetchContent_MakeAvailable(corosio)
 
-#
+# Boost
+
+message(STATUS "Fetching Boost")
+
+FetchContent_Declare(
+  Boost
+  URL https://github.com/boostorg/boost/releases/download/boost-1.90.0/boost-1.90.0-cmake.tar.xz
+  URL_HASH SHA256=aca59f889f0f32028ad88ba6764582b63c916ce5f77b31289ad19421a96c555f
+  DOWNLOAD_EXTRACT_TIMESTAMP ON
+)
+
+set(BOOST_INCLUDE_LIBRARIES container_hash describe assert)
+
+FetchContent_MakeAvailable(Boost)
+
+# corosio_protocol_bench
 
 add_executable(corosio_protocol_bench)
 
 target_sources(corosio_protocol_bench PRIVATE main.cpp)
 
-target_link_libraries(corosio_protocol_bench PRIVATE Boost::capy Boost::corosio)
+target_link_libraries(corosio_protocol_bench PRIVATE Boost::capy Boost::corosio Boost::container_hash Boost::describe Boost::assert)
