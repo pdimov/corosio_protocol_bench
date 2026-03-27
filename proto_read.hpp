@@ -41,7 +41,7 @@ template<class Source, class A>
 task_type proto_read( Source& source, std::vector<unsigned char, A>& v );
 
 template<class Source, class T>
-    requires boost::describe::has_describe_members<T>::value && !std::is_union_v<T>
+    requires (boost::describe::has_describe_members<T>::value && !std::is_union_v<T>)
 task_type proto_read( Source& source, T& v );
 
 // string
@@ -85,7 +85,7 @@ task_type proto_read( Source& source, std::vector<unsigned char, A>& v )
 // described class
 
 template<class Source, class T>
-    requires boost::describe::has_describe_members<T>::value && !std::is_union_v<T>
+    requires (boost::describe::has_describe_members<T>::value && !std::is_union_v<T>)
 task_type proto_read( Source& source, T& v )
 {
     using D = boost::describe::describe_members<T, boost::describe::mod_any_access | boost::describe::mod_inherited>;
