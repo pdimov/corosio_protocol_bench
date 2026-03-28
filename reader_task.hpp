@@ -24,8 +24,6 @@ template<class Source> task_type reader_task( Source source )
     co_await proto_read( source, h2 );
 
     std::printf( "  reader_task: n=%zu computed=%zx received=%zx %s\n", v.size(), h1, h2, ( h1 == h2? "": "***FAIL***") );
-
-    source.shutdown();
 }
 
 #endif // #ifndef READER_TASK_HPP_INCLUDED

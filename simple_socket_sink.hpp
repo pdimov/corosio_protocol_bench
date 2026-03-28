@@ -24,6 +24,13 @@ public:
     {
     }
 
+    ~simple_socket_sink()
+    {
+        sock_.shutdown( socket_type::shutdown_send );
+    }
+
+    simple_socket_sink( simple_socket_sink&& ) = default;
+
     task_type write( void const* p, std::size_t n )
     {
         auto [ec, m] = co_await boost::capy::write( sock_, boost::capy::const_buffer( p, n ) );
@@ -33,11 +40,6 @@ public:
     task_type flush()
     {
         co_return;
-    }
-
-    void shutdown()
-    {
-        sock_.shutdown( socket_type::shutdown_send );
     }
 };
 

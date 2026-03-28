@@ -24,15 +24,17 @@ public:
     {
     }
 
+    ~simple_socket_source()
+    {
+        sock_.shutdown( socket_type::shutdown_receive );
+    }
+
+    simple_socket_source( simple_socket_source&& ) = default;
+
     task_type read( void* p, std::size_t n )
     {
         auto [ec, m] = co_await boost::capy::read( sock_, boost::capy::mutable_buffer( p, n ) );
         if( ec ) throw std::system_error( ec, "simple_socket_source::read" );
-    }
-
-    void shutdown()
-    {
-        sock_.shutdown( socket_type::shutdown_receive );
     }
 };
 

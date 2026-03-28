@@ -35,8 +35,6 @@ template<class Sink> task_type writer_task( Sink sink )
     co_await sink.flush();
 
     std::printf( "  writer_task: n=%d hash=%zx\n", N, hash );
-
-    sink.shutdown();
 }
 
 #endif // #ifndef WRITER_TASK_HPP_INCLUDED
