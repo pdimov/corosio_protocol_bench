@@ -5,8 +5,8 @@
 // Distributed under the Boost Software License, Version 1.0.
 // https://www.boost.org/LICENSE_1_0.txt
 
-#include <boost/corosio/tcp_socket.hpp>
-#include <boost/capy/task.hpp>
+#include "socket_type.hpp"
+#include "task_type.hpp"
 #include <boost/capy/write.hpp>
 #include <boost/capy/buffers.hpp>
 #include <system_error>
@@ -16,28 +16,28 @@ class simple_socket_sink
 {
 private:
 
-    boost::corosio::tcp_socket sock_;
+    socket_type sock_;
 
 public:
 
-    explicit simple_socket_sink( boost::corosio::tcp_socket&& sock ): sock_( std::move(sock) )
+    explicit simple_socket_sink( socket_type&& sock ): sock_( std::move(sock) )
     {
     }
 
-    boost::capy::task<void> write( void const* p, std::size_t n )
+    task_type write( void const* p, std::size_t n )
     {
         auto [ec, m] = co_await boost::capy::write( sock_, boost::capy::const_buffer( p, n ) );
         if( ec ) throw std::system_error( ec, "simple_socket_sink::write" );
     }
 
-    boost::capy::task<void> flush()
+    task_type flush()
     {
         co_return;
     }
 
     void shutdown()
     {
-        sock_.shutdown( boost::corosio::tcp_socket::shutdown_send );
+        sock_.shutdown( socket_type::shutdown_send );
     }
 };
 

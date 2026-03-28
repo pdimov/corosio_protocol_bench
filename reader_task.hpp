@@ -7,11 +7,12 @@
 
 #include "element.hpp"
 #include "proto_read.hpp"
+#include "task_type.hpp"
 #include <boost/container_hash/hash.hpp>
 #include <vector>
 #include <cstdio>
 
-template<class Source> boost::capy::task<void> reader_task( Source source )
+template<class Source> task_type reader_task( Source source )
 {
     std::vector<element> v;
 

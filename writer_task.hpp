@@ -7,11 +7,12 @@
 
 #include "element.hpp"
 #include "proto_write.hpp"
+#include "task_type.hpp"
 #include <boost/container_hash/hash.hpp>
 #include <vector>
 #include <cstdio>
 
-template<class Sink> boost::capy::task<void> writer_task( Sink sink )
+template<class Sink> task_type writer_task( Sink sink )
 {
     std::vector<element> v;
 

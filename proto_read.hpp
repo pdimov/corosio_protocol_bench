@@ -6,7 +6,7 @@
 // https://www.boost.org/LICENSE_1_0.txt
 
 #include "for_each_await.hpp"
-#include <boost/capy/task.hpp>
+#include "task_type.hpp"
 #include <boost/describe/members.hpp>
 #include <vector>
 #include <string>
@@ -19,8 +19,6 @@ struct Source
     __awaitable__ read( void* p, std::size_t n );
 };
 */
-
-using task_type = boost::capy::task<void>;
 
 // forward declarations
 
