@@ -22,14 +22,11 @@ struct Source
 
 using task_type = boost::capy::task<void>;
 
+// forward declarations
+
 template<class Source, class T>
     requires std::is_fundamental_v<T>
-auto proto_read( Source& source, T& v )
-{
-    return source.read( &v, sizeof(v) );
-}
-
-// forward declarations
+task_type proto_read( Source& source, T& v );
 
 template<class Source, class Tr, class Al>
 task_type proto_read( Source& source, std::basic_string<char, Tr, Al>& v );
@@ -43,6 +40,15 @@ task_type proto_read( Source& source, std::vector<unsigned char, A>& v );
 template<class Source, class T>
     requires (boost::describe::has_describe_members<T>::value && !std::is_union_v<T>)
 task_type proto_read( Source& source, T& v );
+
+// fundamentals
+
+template<class Source, class T>
+    requires std::is_fundamental_v<T>
+task_type proto_read( Source& source, T& v )
+{
+    co_await source.read( &v, sizeof(v) );
+}
 
 // string
 

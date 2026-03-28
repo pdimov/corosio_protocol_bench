@@ -23,14 +23,11 @@ struct Sink
 
 using task_type = boost::capy::task<void>;
 
+// forward declarations
+
 template<class Sink, class T>
     requires std::is_fundamental_v<T>
-auto proto_write( Sink& sink, T const& v )
-{
-    return sink.write( &v, sizeof(v) );
-}
-
-// forward declarations
+task_type proto_write( Sink& sink, T const& v );
 
 template<class Sink, class Tr, class Al>
 task_type proto_write( Sink& sink, std::basic_string<char, Tr, Al> const& v );
@@ -44,6 +41,15 @@ task_type proto_write( Sink& sink, std::vector<unsigned char, A> const& v );
 template<class Sink, class T>
     requires (boost::describe::has_describe_members<T>::value && !std::is_union_v<T>)
 task_type proto_write( Sink& sink, T const& v );
+
+// fundamentals
+
+template<class Sink, class T>
+    requires std::is_fundamental_v<T>
+task_type proto_write( Sink& sink, T const& v )
+{
+    co_await sink.write( &v, sizeof(v) );
+}
 
 // string
 
