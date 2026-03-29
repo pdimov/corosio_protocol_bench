@@ -12,21 +12,8 @@
 #include <vector>
 #include <cstdio>
 
-template<class Sink> task_type writer_task( Sink sink )
+template<class Sink> task_type writer_task( Sink sink, std::vector<element> const& v )
 {
-    std::vector<element> v;
-
-    int const N = 200'000;
-
-    v.resize( N );
-
-    for( int j = 0; j < N; ++j )
-    {
-        v[ j ].key_ = "";
-        v[ j ].value_ = j;
-        v[ j ].padding_.resize( 12, 0xAA );
-    }
-
     co_await proto_write( sink, v );
 
     std::size_t hash = boost::hash_value( v );
@@ -34,7 +21,7 @@ template<class Sink> task_type writer_task( Sink sink )
 
     co_await sink.flush();
 
-    std::printf( "  writer_task: n=%d hash=%zx\n", N, hash );
+    std::printf( "  writer_task: n=%zu hash=%zx\n", v.size(), hash );
 }
 
 #endif // #ifndef WRITER_TASK_HPP_INCLUDED

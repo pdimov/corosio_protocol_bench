@@ -24,7 +24,7 @@ struct Source
 
 template<class Source, class T>
     requires std::is_fundamental_v<T>
-task_type proto_read( Source& source, T& v );
+auto proto_read( Source& source, T& v );
 
 template<class Source, class Tr, class Al>
 task_type proto_read( Source& source, std::basic_string<char, Tr, Al>& v );
@@ -43,9 +43,9 @@ task_type proto_read( Source& source, T& v );
 
 template<class Source, class T>
     requires std::is_fundamental_v<T>
-task_type proto_read( Source& source, T& v )
+auto proto_read( Source& source, T& v )
 {
-    co_await source.read( &v, sizeof(v) );
+    return source.read( &v, sizeof(v) );
 }
 
 // string

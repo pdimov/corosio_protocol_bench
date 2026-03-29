@@ -25,7 +25,7 @@ struct Sink
 
 template<class Sink, class T>
     requires std::is_fundamental_v<T>
-task_type proto_write( Sink& sink, T const& v );
+auto proto_write( Sink& sink, T const& v );
 
 template<class Sink, class Tr, class Al>
 task_type proto_write( Sink& sink, std::basic_string<char, Tr, Al> const& v );
@@ -44,9 +44,9 @@ task_type proto_write( Sink& sink, T const& v );
 
 template<class Sink, class T>
     requires std::is_fundamental_v<T>
-task_type proto_write( Sink& sink, T const& v )
+auto proto_write( Sink& sink, T const& v )
 {
-    co_await sink.write( &v, sizeof(v) );
+    return sink.write( &v, sizeof(v) );
 }
 
 // string

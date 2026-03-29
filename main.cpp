@@ -8,6 +8,8 @@
 #include "simple_socket_sink.hpp"
 #include "buffered_socket_source.hpp"
 #include "buffered_socket_sink.hpp"
+#include "immediate_socket_source.hpp"
+#include "immediate_socket_sink.hpp"
 #include "reader_task.hpp"
 #include "writer_task.hpp"
 #include <boost/corosio/io_context.hpp>
@@ -20,7 +22,7 @@
 namespace corosio = boost::corosio;
 namespace capy = boost::capy;
 
-template<class Source, class Sink> void bench()
+template<class Source, class Sink> void bench( std::vector<element> const& v )
 {
     corosio::io_context ioc;
 
@@ -30,7 +32,7 @@ template<class Source, class Sink> void bench()
 
     auto t1 = std::chrono::steady_clock::now();
 
-    capy::run_async( ioc.get_executor() )( writer_task( Sink( std::move(ws) ) ) );
+    capy::run_async( ioc.get_executor() )( writer_task( Sink( std::move(ws) ), v ) );
     capy::run_async( ioc.get_executor() )( reader_task( Source( std::move(rs) ) ) );
 
     ioc.run();
@@ -44,6 +46,18 @@ template<class Source, class Sink> void bench()
 
 int main()
 {
-    bench<simple_socket_source, simple_socket_sink>();
-    bench<buffered_socket_source, buffered_socket_sink>();
+    int const N = 100'000;
+
+    std::vector<element> v( N );
+
+    for( int j = 0; j < N; ++j )
+    {
+        v[ j ].index_ = j;
+        v[ j ].key_ = "key" + std::to_string( j );
+        v[ j ].value_.resize( 4, { j * 1.0f, j * 2.0f, j * 3.0f } );
+    }
+
+    bench<simple_socket_source, simple_socket_sink>( v );
+    bench<buffered_socket_source, buffered_socket_sink>( v );
+    bench<immediate_socket_source, immediate_socket_sink>( v );
 }

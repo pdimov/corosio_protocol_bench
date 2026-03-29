@@ -9,13 +9,20 @@
 #include <string>
 #include <vector>
 
-struct element
+struct point
 {
-    std::string key_;
-    float value_;
-    std::vector<unsigned char> padding_;
+    float x, y, z;
 };
 
-BOOST_DESCRIBE_STRUCT(element, (), (key_, value_, padding_))
+BOOST_DESCRIBE_STRUCT(point, (), (x, y, z))
+
+struct element
+{
+    int index_;
+    std::string key_;
+    std::vector<point> value_;
+};
+
+BOOST_DESCRIBE_STRUCT(element, (), (index_, key_, value_))
 
 #endif // #ifndef ELEMENT_HPP_INCLUDED
