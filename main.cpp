@@ -6,6 +6,8 @@
 #include "proto_write.hpp"
 #include "simple_socket_source.hpp"
 #include "simple_socket_sink.hpp"
+#include "buffered_socket_source.hpp"
+#include "buffered_socket_sink.hpp"
 #include "reader_task.hpp"
 #include "writer_task.hpp"
 #include <boost/corosio/io_context.hpp>
@@ -43,4 +45,5 @@ template<class Source, class Sink> void bench()
 int main()
 {
     bench<simple_socket_source, simple_socket_sink>();
+    bench<buffered_socket_source, buffered_socket_sink>();
 }
