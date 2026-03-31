@@ -26,7 +26,7 @@ template<class Source, class Sink> void bench( std::vector<element> const& v )
 {
     corosio::io_context ioc;
 
-    auto [rs, ws] = corosio::test::make_socket_pair( ioc );
+    auto [rs, ws] = corosio::test::make_socket_pair<corosio::tcp_socket, corosio::tcp_acceptor, false>( ioc );
 
     std::printf( "-- %s:\n", BOOST_CURRENT_FUNCTION );
 
