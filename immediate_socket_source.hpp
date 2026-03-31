@@ -12,6 +12,7 @@
 #include <system_error>
 #include <cstddef>
 #include <cstring>
+#include <cstdio>
 
 class immediate_socket_source
 {
@@ -82,6 +83,8 @@ private:
             first_ = 0;
             last_ = 0;
 
+            std::printf( "immediate_socket_source::read: unexpected eof, n=%zu q=%zu\n", n, q );
+
             throw std::system_error( ec, "immediate_socket_source::read" );
         }
 
@@ -90,7 +93,12 @@ private:
         first_ = 0;
         last_ = q;
 
-        if( ec && ec != boost::capy::cond::eof ) throw std::system_error( ec, "immediate_socket_source::read" );
+        if( ec && ec != boost::capy::cond::eof )
+        {
+            std::printf( "immediate_socket_source::read: read error, ec=%s:%d\n", ec.category().name(), ec.value() );
+
+            throw std::system_error( ec, "immediate_socket_source::read" );
+        }
     }
 
     task_type noop()
