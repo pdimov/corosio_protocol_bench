@@ -2,9 +2,10 @@
 
 This repository contains a benchmark that sends a large C++ data structure
 (`std::vector<element>`, where the vector size is sufficiently big),
-over TCP/IP using asynchronous I/O using Boost.Corosio.
+over TCP/IP using asynchronous I/O.
+([Boost.Corosio](https://develop.corosio.cpp.al/corosio/index.html) is used as the asynchronous I/O library.)
 
-The C++ structure is serialized into bytes by using a custom binary protocol. This is intended to emulate real world applications.
+The C++ structure is serialized into bytes by using a custom binary protocol. This is intended to model real world applications.
 
 The protocol serializes fundamental C++ types (characters, integers, floating point) as a sequence of their underlying storage bytes.
 (This doesn't take into account endianness and other factors such as `sizeof(size_t)` differences, but is good enough for both this benchmark and many practical uses.)
@@ -30,7 +31,7 @@ struct element
 ```
 
 The protocol is implemented in `proto_write.hpp` (serialization) and `proto_read.hpp` (deserialization). The implementations
-are generic with respect to the structure types; reflection (emulated via Boost.Describe) is used to enumerate the members
+are generic with respect to the structure types; reflection (emulated via [Boost.Describe](https://boost.org/libs/describe)) is used to enumerate the members
 and to implement (de)serialization.
 
 In order for the (de)serialization code to be independent of the underlying I/O mechanism, the functions take a `Source` (for
