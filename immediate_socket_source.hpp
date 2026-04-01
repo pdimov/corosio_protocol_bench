@@ -10,6 +10,7 @@
 #include <boost/capy/read.hpp>
 #include <boost/capy/buffers.hpp>
 #include <system_error>
+#include <optional>
 #include <cstddef>
 #include <cstring>
 #include <cstdio>
@@ -34,7 +35,7 @@ private:
         void* p_;
         std::size_t n_;
 
-        task_type inner_;
+        std::optional<task_type> inner_;
 
         bool await_ready() noexcept
         {
@@ -56,17 +57,17 @@ private:
 
             inner_ = this_->read_impl( p_, n_ );
 
-            return inner_.await_ready();
+            return inner_->await_ready();
         }
 
         std::coroutine_handle<> await_suspend( std::coroutine_handle<> h, boost::capy::io_env const* env ) noexcept
         {
-            return inner_.await_suspend( h, env );
+            return inner_->await_suspend( h, env );
         }
 
         void await_resume() noexcept
         {
-            return inner_.await_resume();
+            if( inner_ ) inner_->await_resume();
         }
     };
 
@@ -101,11 +102,6 @@ private:
         }
     }
 
-    task_type noop()
-    {
-        co_return;
-    }
-
 public:
 
     explicit immediate_socket_source( socket_type&& sock ): sock_( std::move(sock) )
@@ -121,7 +117,7 @@ public:
 
     auto read( void* p, std::size_t n )
     {
-        return read_awaitable{ this, p, n, noop() };
+        return read_awaitable{ this, p, n, {} };
     }
 };
 

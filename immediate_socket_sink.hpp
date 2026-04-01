@@ -10,6 +10,7 @@
 #include <boost/capy/write.hpp>
 #include <boost/capy/buffers.hpp>
 #include <system_error>
+#include <optional>
 #include <cstddef>
 #include <cstring>
 
@@ -33,9 +34,9 @@ private:
         void const* p_;
         std::size_t n_;
 
-        task_type inner_;
+        std::optional<task_type> inner_;
 
-        bool await_ready() const noexcept
+        bool await_ready() noexcept
         {
             if( this_->m_ + n_ <= N )
             {
@@ -44,17 +45,19 @@ private:
                 return true;
             }
 
-            return inner_.await_ready();
+            inner_ = this_->write_impl( p_, n_ );
+
+            return inner_->await_ready();
         }
 
         std::coroutine_handle<> await_suspend( std::coroutine_handle<> h, boost::capy::io_env const* env ) noexcept
         {
-            return inner_.await_suspend( h, env );
+            return inner_->await_suspend( h, env );
         }
 
         void await_resume() noexcept
         {
-            return inner_.await_resume();
+            if( inner_ ) inner_->await_resume();
         }
     };
 
@@ -86,7 +89,7 @@ public:
 
     auto write( void const* p, std::size_t n )
     {
-        return write_awaitable{ this, p, n, write_impl( p, n ) };
+        return write_awaitable{ this, p, n, {} };
     }
 
     task_type flush()

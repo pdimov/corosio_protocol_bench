@@ -10,7 +10,7 @@ The C++ structure is serialized into bytes by using a custom binary protocol. Th
 The protocol serializes fundamental C++ types (characters, integers, floating point) as a sequence of their underlying storage bytes.
 (This doesn't take into account endianness and other factors such as `sizeof(size_t)` differences, but is good enough for both this benchmark and many practical uses.)
 
-Sequences such as `std::vector` and `std::string` are serialized by first serializing `size()`, then each of the elements, in order.
+Sequences such as `std::vector` and `std::string` are serialized by first serializing `size()`, then each of their elements, in order.
 
 Structures are serialized by serializing each member, in order.
 
@@ -103,7 +103,7 @@ This results in a noticeable gain over the buffered case.
 -- void bench(const std::vector<element> &) [Source = immediate_socket_source, Sink = immediate_socket_sink]:
   writer_task: n=100000 hash=1a7bc9acb714e4a0
   reader_task: n=100000 computed=1a7bc9acb714e4a0 received=1a7bc9acb714e4a0
--- 359 ms
+-- 309 ms
 ```
 
 (The quoted times are for Clang on Windows. Other platforms differ substantially in the
