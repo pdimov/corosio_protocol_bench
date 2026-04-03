@@ -73,7 +73,7 @@ many short read/write syscalls.
 -- void bench(const std::vector<element> &) [Source = simple_socket_source, Sink = simple_socket_sink]:
   writer_task: n=100000 hash=1a7bc9acb714e4a0
   reader_task: n=100000 computed=1a7bc9acb714e4a0 received=1a7bc9acb714e4a0
--- 27989 ms
+-- 15298 ms
 ```
 
 The buffered sink accumulates the written bytes into a local buffer, issuing a syscall
@@ -88,7 +88,7 @@ improvement.
 -- void bench(const std::vector<element> &) [Source = buffered_socket_source, Sink = buffered_socket_sink]:
   writer_task: n=100000 hash=1a7bc9acb714e4a0
   reader_task: n=100000 computed=1a7bc9acb714e4a0 received=1a7bc9acb714e4a0
--- 436 ms
+-- 451 ms
 ```
 
 Finally, the immediate source/sink types improve upon the corresponding buffered variants
@@ -103,8 +103,45 @@ This results in a noticeable gain over the buffered case.
 -- void bench(const std::vector<element> &) [Source = immediate_socket_source, Sink = immediate_socket_sink]:
   writer_task: n=100000 hash=1a7bc9acb714e4a0
   reader_task: n=100000 computed=1a7bc9acb714e4a0 received=1a7bc9acb714e4a0
+-- 315 ms
+```
+
+Note: The quoted times are for Clang 20.1.8 on Windows, and are highly variable.
+For illustrative purposes, another run's output is given below.
+
+```
+-- void bench(const std::vector<element> &) [Source = simple_socket_source, Sink = simple_socket_sink]:
+  writer_task: n=100000 hash=1a7bc9acb714e4a0
+  reader_task: n=100000 computed=1a7bc9acb714e4a0 received=1a7bc9acb714e4a0
+-- 34099 ms
+
+-- void bench(const std::vector<element> &) [Source = buffered_socket_source, Sink = buffered_socket_sink]:
+  writer_task: n=100000 hash=1a7bc9acb714e4a0
+  reader_task: n=100000 computed=1a7bc9acb714e4a0 received=1a7bc9acb714e4a0
+-- 446 ms
+
+-- void bench(const std::vector<element> &) [Source = immediate_socket_source, Sink = immediate_socket_sink]:
+  writer_task: n=100000 hash=1a7bc9acb714e4a0
+  reader_task: n=100000 computed=1a7bc9acb714e4a0 received=1a7bc9acb714e4a0
 -- 309 ms
 ```
 
-(The quoted times are for Clang on Windows. Other platforms differ substantially in the
-absolute times, but the relative rankings of the three cases above remain.)
+Other platforms differ substantially in the absolute times, but the relative rankings of the three cases above remain.
+For example, the same machine under WSL running Ubuntu 24.04 (using Clang 18.1.3) produces
+
+```
+-- void bench(const std::vector<element> &) [Source = simple_socket_source, Sink = simple_socket_sink]:
+  writer_task: n=100000 hash=1a7bc9acb714e4a0
+  reader_task: n=100000 computed=1a7bc9acb714e4a0 received=1a7bc9acb714e4a0
+-- 8775 ms
+
+-- void bench(const std::vector<element> &) [Source = buffered_socket_source, Sink = buffered_socket_sink]:
+  writer_task: n=100000 hash=1a7bc9acb714e4a0
+  reader_task: n=100000 computed=1a7bc9acb714e4a0 received=1a7bc9acb714e4a0
+-- 244 ms
+
+-- void bench(const std::vector<element> &) [Source = immediate_socket_source, Sink = immediate_socket_sink]:
+  writer_task: n=100000 hash=1a7bc9acb714e4a0
+  reader_task: n=100000 computed=1a7bc9acb714e4a0 received=1a7bc9acb714e4a0
+-- 162 ms
+```
